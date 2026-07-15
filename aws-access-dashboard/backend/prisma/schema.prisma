@@ -1,26 +1,44 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql" url = env("DATABASE_URL") }
-
-enum Role { DEVOPS BACKEND FRONTEND }
-model User {
-  id String @id @default(cuid())
-  name String
-  email String @unique
-  passwordHash String
-  role Role
-  active Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  audits AuditLog[]
+generator client {
+  provider = "prisma-client-js"
 }
+
+
+  migrations: {
+    path: "prisma/migrations",
+  }
+
+  datasource: {
+    url: env("DATABASE_URL"),
+  }
+
+enum Role {
+  DEVOPS
+  BACKEND
+  FRONTEND
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  role         Role
+  active       Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  audits       AuditLog[]
+}
+
 model AuditLog {
-  id String @id @default(cuid())
-  action String
-  resource String
-  result String
-  metadata Json?
+  id        String   @id @default(cuid())
+  action    String
+  resource  String
+  result    String
+  metadata  Json?
   createdAt DateTime @default(now())
+
   userId String
-  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, createdAt])
 }
