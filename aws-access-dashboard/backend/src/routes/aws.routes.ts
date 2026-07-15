@@ -1,0 +1,2 @@
+import { Router } from 'express'; import { Role } from '@prisma/client'; import { buckets,lambdas,logs,summary } from '../controllers/aws.controller.js'; import { requireAuth } from '../middleware/auth.js'; import { allowRoles } from '../middleware/rbac.js';
+export const awsRouter=Router(); awsRouter.use(requireAuth); awsRouter.get('/summary',summary); awsRouter.get('/lambda',allowRoles(Role.BACKEND,Role.DEVOPS),lambdas); awsRouter.get('/s3',allowRoles(Role.FRONTEND,Role.DEVOPS),buckets); awsRouter.get('/logs',allowRoles(Role.BACKEND,Role.DEVOPS),logs);

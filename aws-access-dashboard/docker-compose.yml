@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: aws_dashboard
+      POSTGRES_PASSWORD: aws_dashboard
+      POSTGRES_DB: aws_dashboard
+    ports: ["5432:5432"]
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    depends_on: [postgres]
+    ports: ["4000:4000"]
+  frontend:
+    build: ./frontend
+    depends_on: [backend]
+    ports: ["3000:80"]
+volumes:
+  postgres_data:

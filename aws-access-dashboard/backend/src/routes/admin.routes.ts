@@ -1,0 +1,2 @@
+import { Router } from 'express'; import { Role } from '@prisma/client'; import { audits,users } from '../controllers/admin.controller.js'; import { requireAuth } from '../middleware/auth.js'; import { allowRoles } from '../middleware/rbac.js';
+export const adminRouter=Router(); adminRouter.use(requireAuth,allowRoles(Role.DEVOPS)); adminRouter.get('/users',users); adminRouter.get('/audits',audits);
