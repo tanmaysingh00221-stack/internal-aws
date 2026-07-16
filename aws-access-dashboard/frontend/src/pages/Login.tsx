@@ -1,2 +1,109 @@
-import { useState } from 'react'; import { Cloud,Lock,Mail } from 'lucide-react'; import { useAuth } from '../lib/auth';
-export function Login(){const {login}=useAuth();const [email,setEmail]=useState('devops@example.com');const [password,setPassword]=useState('Admin@123');const [error,setError]=useState('');const [busy,setBusy]=useState(false);async function submit(e:React.FormEvent){e.preventDefault();setBusy(true);setError('');try{await login(email,password)}catch(x){setError(x instanceof Error?x.message:'Login failed')}finally{setBusy(false)}}return <div className="grid min-h-screen place-items-center p-5"><form onSubmit={submit} className="glass w-full max-w-md rounded-3xl p-8"><div className="mb-8 flex items-center gap-3"><div className="rounded-2xl bg-orange-500 p-3 text-black"><Cloud/></div><div><h1 className="text-2xl font-bold">AWS Access Dashboard</h1><p className="text-sm text-slate-400">Sign in with your team account</p></div></div><label className="text-sm">Email</label><div className="mt-2 flex items-center rounded-xl border border-slate-700 bg-slate-950 px-3"><Mail className="h-4 w-4 text-slate-500"/><input className="w-full bg-transparent p-3 outline-none" value={email} onChange={e=>setEmail(e.target.value)}/></div><label className="mt-4 block text-sm">Password</label><div className="mt-2 flex items-center rounded-xl border border-slate-700 bg-slate-950 px-3"><Lock className="h-4 w-4 text-slate-500"/><input type="password" className="w-full bg-transparent p-3 outline-none" value={password} onChange={e=>setPassword(e.target.value)}/></div>{error&&<p className="mt-3 text-sm text-red-400">{error}</p>}<button disabled={busy} className="mt-6 w-full rounded-xl bg-orange-500 py-3 font-semibold text-black hover:bg-orange-400 disabled:opacity-60">{busy?'Signing in…':'Sign in'}</button><p className="mt-4 text-center text-xs text-slate-500">Local demo credentials are prefilled.</p></form></div>}
+import { useState } from "react";
+import { Cloud, Lock, Mail } from "lucide-react";
+
+import { useAuth } from "../lib/auth";
+
+export function Login() {
+    const { login } = useAuth();
+
+    const [email, setEmail] = useState("devops@example.com");
+    const [password, setPassword] = useState("Admin@123");
+    const [error, setError] = useState("");
+    const [busy, setBusy] = useState(false);
+
+    async function submit(e: React.FormEvent) {
+        e.preventDefault();
+
+        setBusy(true);
+        setError("");
+
+        try {
+            await login(email, password);
+        } catch (x) {
+            setError(
+                x instanceof Error
+                    ? x.message
+                    : "Login failed"
+            );
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    return (
+        <div className="grid min-h-screen place-items-center p-5">
+            <form
+                onSubmit={submit}
+                className="glass w-full max-w-md rounded-3xl p-8"
+            >
+                <div className="mb-8 flex items-center gap-3">
+                    <div className="rounded-2xl bg-orange-500 p-3 text-black">
+                        <Cloud />
+                    </div>
+
+                    <div>
+                        <h1 className="text-2xl font-bold">
+                            AWS Access Dashboard
+                        </h1>
+
+                        <p className="text-sm text-slate-400">
+                            Sign in with your team account
+                        </p>
+                    </div>
+                </div>
+
+                <label className="text-sm">
+                    Email
+                </label>
+
+                <div className="mt-2 flex items-center rounded-xl border border-slate-700 bg-slate-950 px-3">
+                    <Mail className="h-4 w-4 text-slate-500" />
+
+                    <input
+                        className="w-full bg-transparent p-3 outline-none"
+                        value={email}
+                        onChange={(e) =>
+                            setEmail(e.target.value)
+                        }
+                    />
+                </div>
+
+                <label className="mt-4 block text-sm">
+                    Password
+                </label>
+
+                <div className="mt-2 flex items-center rounded-xl border border-slate-700 bg-slate-950 px-3">
+                    <Lock className="h-4 w-4 text-slate-500" />
+
+                    <input
+                        type="password"
+                        className="w-full bg-transparent p-3 outline-none"
+                        value={password}
+                        onChange={(e) =>
+                            setPassword(e.target.value)
+                        }
+                    />
+                </div>
+
+                {error && (
+                    <p className="mt-3 text-sm text-red-400">
+                        {error}
+                    </p>
+                )}
+
+                <button
+                    disabled={busy}
+                    className="mt-6 w-full rounded-xl bg-orange-500 py-3 font-semibold text-black hover:bg-orange-400 disabled:opacity-60"
+                >
+                    {busy
+                        ? "Signing in…"
+                        : "Sign in"}
+                </button>
+
+                <p className="mt-4 text-center text-xs text-slate-500">
+                    Local demo credentials are prefilled.
+                </p>
+            </form>
+        </div>
+    );
+}

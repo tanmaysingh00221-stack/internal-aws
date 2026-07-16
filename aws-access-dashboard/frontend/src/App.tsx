@@ -1,2 +1,8 @@
-import { BrowserRouter,Navigate,Route,Routes } from 'react-router-dom'; import { useAuth } from './lib/auth'; import { Layout } from './components/Layout'; import { Login } from './pages/Login'; import { Overview } from './pages/Overview'; import { ResourcePage } from './pages/ResourcePage'; import { Team } from './pages/Team'; import { Settings } from './pages/Settings';
-export default function App(){const {user}=useAuth();if(!user)return <Login/>;return <BrowserRouter><Routes><Route element={<Layout/>}><Route index element={<Overview/>}/><Route path="compute" element={<ResourcePage kind="lambda"/>}/><Route path="storage" element={<ResourcePage kind="s3"/>}/><Route path="logs" element={<ResourcePage kind="logs"/>}/><Route path="team" element={<Team/>}/><Route path="settings" element={<Settings/>}/><Route path="*" element={<Navigate to="/"/>}/></Route></Routes></BrowserRouter>}
+import { BrowserRouter,Navigate,Route,Routes } from 'react-router-dom'; 
+import { useAuth } from './lib/auth'; import { Layout } from './components/Layout'; 
+import { Login } from './pages/Login'; import { Overview } from './pages/Overview'; 
+import { ResourcePage } from './pages/ResourcePage'; import { Team } from './pages/Team'; 
+import { Settings } from './pages/Settings';
+export default function App(){const {user}=useAuth();if(!user)
+    return <Login/>;
+return <BrowserRouter><Routes><Route element={<Layout/>}><Route index element={<Overview/>}/><Route path="compute" element={<ResourcePage kind="lambda"/>}/><Route path="storage" element={<ResourcePage kind="s3"/>}/><Route path="logs" element={<ResourcePage kind="logs"/>}/><Route path="team" element={<Team/>}/><Route path="settings" element={<Settings/>}/><Route path="*" element={<Navigate to="/"/>}/></Route></Routes></BrowserRouter>}

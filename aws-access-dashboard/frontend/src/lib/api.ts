@@ -1,2 +1,35 @@
-const BASE=import.meta.env.VITE_API_URL||'http://localhost:4000/api';
-export async function api<T>(path:string,options:RequestInit={}):Promise<T>{const token=localStorage.getItem('token');const r=await fetch(`${BASE}${path}`,{...options,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{...options.headers})}});if(!r.ok){const e=await r.json().catch(()=>({message:'Request failed'}));throw new Error(e.message)}return r.json()}
+      const BASE =
+    import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+
+export async function api<T>(
+    path: string,
+    options: RequestInit = {}
+): Promise<T> {
+    const token = localStorage.getItem("token");
+
+    const r = await fetch(`${BASE}${path}`, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(token
+                ? {
+                      Authorization: `Bearer ${token}`,
+                  }
+                : {
+                      ...options.headers,
+                  }),
+        },
+    });
+
+    if (!r.ok) {
+        const e = await r
+            .json()
+            .catch(() => ({
+                message: "Request failed",
+            }));
+
+        throw new Error(e.message);
+    }
+
+    return r.json();
+}
