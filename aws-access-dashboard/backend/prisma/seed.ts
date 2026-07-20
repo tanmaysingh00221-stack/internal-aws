@@ -1,16 +1,55 @@
 import { PrismaClient, Role } from "@prisma/client";
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
+
 const prisma = new PrismaClient();
+
 const users = [
-  ['DevOps Admin','devops@example.com','Admin@123',Role.DEVOPS],
-  ['Backend Developer','backend@example.com','Backend@123',Role.BACKEND],
-  ['Frontend Developer','frontend@example.com','Frontend@123',Role.FRONTEND]
-] as const;
-for (const [name,email,password,role] of users) {
-  await prisma.user.upsert({
-    where:{email},
-    update:{},
-    create:{name,email,role,passwordHash:await bcrypt.hash(password,12)}
-  });
+  {
+    name: "DevOps Admin",
+    email: "devops@example.com",
+    password: "Admin@123",
+    role: Role.DEVOPS,
+  },
+  {
+    name: "Backend Developer",
+    email: "backend@example.com",
+    password: "Backend@123",
+    role: Role.BACKEND,
+  },
+  {
+    name: "Frontend Developer",
+    email: "frontend@example.com",
+    password: "Frontend@123",
+    role: Role.FRONTEND,
+  },
+];
+
+async function main() {
+  for (const user of users) {
+    const passwordHash = await bcrypt.hash(user.password, 12);
+
+    await prisma.user.upsert({
+      where: {
+        email: user.email,
+      },
+      update: {},
+      create: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        passwordHash,
+      },
+    });
+
+    console.log(`✅ Seeded: ${user.email}`);
+  }
 }
-await prisma.$disconnect();
+
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
