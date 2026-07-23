@@ -1,5 +1,119 @@
-import { Activity,Cloud,Cog,Database,FileText,LayoutDashboard,LogOut,Users } from 'lucide-react';
-import { NavLink,Outlet } from 'react-router-dom'; 
+import {
+  Activity,
+  Cloud,
+  Cog,
+  Database,
+  FileText,
+  LayoutDashboard,
+  LogOut,
+  Users,
+} from 'lucide-react';
+
+import { NavLink, Outlet } from 'react-router-dom';
+
 import { useAuth } from '../lib/auth';
-const links=[['/','Overview',LayoutDashboard],['/compute','Compute',Activity],['/storage','Storage',Database],['/logs','Logs',FileText],['/team','Team',Users],['/settings','Settings',Cog]] as const;
-export function Layout(){const {user,logout}=useAuth();return <div className="min-h-screen lg:flex"><aside className="glass m-3 rounded-2xl p-4 lg:fixed lg:inset-y-0 lg:w-64"><div className="flex items-center gap-3 px-2 py-3"><div className="rounded-xl bg-orange-500 p-2 text-black"><Cloud/></div><div><div className="font-semibold">AWS Control</div><div className="text-xs text-slate-500">Internal dashboard</div></div></div><nav className="mt-6 space-y-1">{links.filter(([p])=>!(p==='/team'&&user?.role!=='DEVOPS')).map(([p,n,I])=><NavLink key={p} to={p} className={({isActive})=>`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm ${isActive?'bg-orange-500 text-black':'text-slate-400 hover:bg-slate-800 hover:text-white'}`}><I className="h-4 w-4"/>{n}</NavLink>)}</nav><div className="absolute bottom-5 left-4 right-4"><div className="rounded-xl bg-slate-900/70 p-3"><div className="text-sm font-medium">{user?.name}</div><div className="text-xs text-slate-500">{user?.role}</div></div><button onClick={logout} className="mt-2 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-400 hover:bg-slate-800"><LogOut className="h-4 w-4"/>Sign out</button></div></aside><main className="w-full p-5 lg:ml-72"><Outlet/></main></div>}
+
+
+// --------------------------------------------------
+// Navigation Links
+// --------------------------------------------------
+
+const links = [
+  ['/', 'Overview', LayoutDashboard],
+  ['/compute', 'Compute', Activity],
+  ['/storage', 'Storage', Database],
+  ['/logs', 'Logs', FileText],
+  ['/team', 'Team', Users],
+  ['/settings', 'Settings', Cog],
+] as const;
+
+
+// --------------------------------------------------
+// Layout Component
+// --------------------------------------------------
+
+export function Layout() {
+  const { user, logout } = useAuth();
+
+  const visibleLinks = links.filter(([path]) => {
+    return !(path === '/team' && user?.role !== 'DEVOPS');
+  });
+
+  return (
+    <div className="min-h-screen lg:flex">
+
+      {/* ---------------- Sidebar ---------------- */}
+
+      <aside className="glass m-3 rounded-2xl p-4 lg:fixed lg:inset-y-0 lg:w-64">
+
+        {/* Logo */}
+
+        <div className="flex items-center gap-3 px-2 py-3">
+          <div className="rounded-xl bg-orange-500 p-2 text-black">
+            <Cloud />
+          </div>
+
+          <div>
+            <div className="font-semibold">AWS Control</div>
+            <div className="text-xs text-slate-500">
+              Internal dashboard
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+
+        <nav className="mt-6 space-y-1">
+          {visibleLinks.map(([path, name, Icon]) => (
+            <NavLink
+              key={path}
+              to={path}
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm ${
+                  isActive
+                    ? 'bg-orange-500 text-black'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`
+              }
+            >
+              <Icon className="h-4 w-4" />
+              {name}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* User Card */}
+
+        <div className="absolute bottom-5 left-4 right-4">
+
+          <div className="rounded-xl bg-slate-900/70 p-3">
+            <div className="text-sm font-medium">
+              {user?.name}
+            </div>
+
+            <div className="text-xs text-slate-500">
+              {user?.role}
+            </div>
+          </div>
+
+          <button
+            onClick={logout}
+            className="mt-2 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-400 hover:bg-slate-800"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign out
+          </button>
+
+        </div>
+
+      </aside>
+
+      {/* ---------------- Main Content ---------------- */}
+
+      <main className="w-full p-5 lg:ml-72">
+        <Outlet />
+      </main>
+
+    </div>
+  );
+}
